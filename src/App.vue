@@ -43,27 +43,29 @@ export default {
 
 <template>
   <div class="flex justify-center bg-slate-600 h-screen p-2 overflow-auto">
-    <div class="flex gap-2">
-      <Datepicker
-        v-model="date"
-        :min-date="start"
-        :max-date="end"
-        :clearable="false"
-        week-start="0"
-        prevent-min-max-navigation
-      ></Datepicker>
-      <div class="w-64 md:w-96" dir="rtl">
-        <div v-for="data in json" :key="data.id">
-          <div
-            v-if="
-              checkProductMade(data.times.makeDays) &&
-              checkAvailability(data.times.available_days_of_week) &&
-              checkExclusion(data.times.excludeDates)
-            "
-            class="w-40 md:w-full rounded-md shadow-md bg-white p-4 mb-4"
-          >
-            <h1 class="font-bold text-lg">{{ data.name }}</h1>
-          </div>
+    <div>
+      <div class="flex gap-2">
+        <Datepicker
+          v-model="date"
+          :min-date="start"
+          :max-date="end"
+          :clearable="false"
+          week-start="0"
+          prevent-min-max-navigation
+        ></Datepicker>
+        <div class="w-64 md:w-96 grid grid-cols-2 gap-2" dir="rtl">
+          <template v-for="data in json" :key="data.id">
+            <div
+              v-if="
+                checkProductMade(data.times.makeDays) &&
+                checkAvailability(data.times.available_days_of_week) &&
+                checkExclusion(data.times.excludeDates)
+              "
+              class="w-24 md:w-full rounded-md shadow-md bg-white p-4 mb-4 h-16"
+            >
+              <h1 class="font-bold text-sm md:text-lg">{{ data.name }}</h1>
+            </div>
+          </template>
         </div>
       </div>
     </div>
