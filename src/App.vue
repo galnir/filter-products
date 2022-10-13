@@ -38,6 +38,17 @@ export default {
       );
     },
   },
+  computed: {
+    filteredProducts() {
+      return this.json.filter((item) => {
+        return (
+          this.checkProductMade(item.times.makeDays) &&
+          this.checkAvailability(item.times.available_days_of_week) &&
+          this.checkExclusion(item.times.excludeDates)
+        );
+      });
+    },
+  },
 };
 </script>
 
@@ -54,13 +65,8 @@ export default {
           prevent-min-max-navigation
         ></Datepicker>
         <div class="w-64 md:w-96 grid grid-cols-2 gap-2" dir="rtl">
-          <template v-for="data in json" :key="data.id">
+          <template v-for="data in filteredProducts" :key="data.id">
             <div
-              v-if="
-                checkProductMade(data.times.makeDays) &&
-                checkAvailability(data.times.available_days_of_week) &&
-                checkExclusion(data.times.excludeDates)
-              "
               class="w-24 md:w-full rounded-md shadow-md bg-white p-4 mb-4 h-16"
             >
               <h1 class="font-bold text-sm md:text-lg">{{ data.name }}</h1>
