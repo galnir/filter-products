@@ -12,7 +12,6 @@ export default {
       end: new Date(new Date().getTime() + 14 * 24 * 60 * 60 * 1000),
       date: new Date(),
       daysHebrew: ["ראשון", "שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת"],
-      recieveDay: [0, ""], // [day, date] tuple
     };
   },
   methods: {
@@ -48,7 +47,7 @@ export default {
         date: string;
         id: string;
       }[]
-    ): [number, string] {
+    ) {
       const date = new Date();
       date.setDate(this.date.getDate() + makeDays);
       while (
@@ -57,7 +56,7 @@ export default {
       ) {
         date.setDate(date.getDate() + 1);
       }
-      return [date.getDay(), date.toLocaleDateString("en-il")];
+      return date.getDay();
     },
   },
 
@@ -89,23 +88,20 @@ export default {
         <div class="w-64 md:w-96 grid grid-cols-2 gap-2" dir="rtl">
           <template v-for="data in filteredProducts" :key="data.id">
             <div
-              class="w-24 md:w-full rounded-md shadow-md bg-white p-4 mb-4 h-28"
-              :set="
-                (recieveDay = getRecieveDay(
-                  data.times.makeDays,
-                  data.times.available_days_of_week,
-                  data.times.excludeDates
-                ))
-              "
+              class="w-24 md:w-full rounded-md shadow-md bg-white p-4 mb-4 h-24"
             >
               <h1 class="font-bold text-sm md:text-lg">{{ data.name }}</h1>
               <p class="text-xs md:text-sm">
                 ניתן להזמין את המוצר ליום
-                <!-- day in week -->
-                {{ daysHebrew[recieveDay[0] as number] }}
-                {{ " " }}
-                <!-- date formatted as dd/mm/yyyy -->
-                {{ recieveDay[1] }}
+                {{
+                  daysHebrew[
+                    getRecieveDay(
+                      data.times.makeDays,
+                      data.times.available_days_of_week,
+                      data.times.excludeDates
+                    )
+                  ]
+                }}
               </p>
             </div>
           </template>
