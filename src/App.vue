@@ -11,6 +11,7 @@ export default {
       start: new Date(),
       end: new Date(new Date().getTime() + 14 * 24 * 60 * 60 * 1000),
       date: new Date(),
+      daysHebrew: ["ראשון", "שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת"],
     };
   },
   methods: {
@@ -37,12 +38,32 @@ export default {
         ).length === 0
       );
     },
+    // function that returns which day the order can be recieved
+    // based on the product's makeDays, availability and exclusions
+    getRecieveDay(
+      makeDays: number,
+      daysArray: number[],
+      dates: {
+        date: string;
+        id: string;
+      }[]
+    ) {
+      const date = new Date();
+      date.setDate(this.date.getDate() + makeDays);
+      while (
+        !this.checkAvailability(daysArray) ||
+        !this.checkExclusion(dates)
+      ) {
+        date.setDate(date.getDate() + 1);
+      }
+      return date.getDay();
+    },
   },
+
   computed: {
     filteredProducts() {
       return this.json.filter((item) => {
         return (
-          this.checkProductMade(item.times.makeDays) &&
           this.checkAvailability(item.times.available_days_of_week) &&
           this.checkExclusion(item.times.excludeDates)
         );
@@ -67,9 +88,21 @@ export default {
         <div class="w-64 md:w-96 grid grid-cols-2 gap-2" dir="rtl">
           <template v-for="data in filteredProducts" :key="data.id">
             <div
-              class="w-24 md:w-full rounded-md shadow-md bg-white p-4 mb-4 h-16"
+              class="w-24 md:w-full rounded-md shadow-md bg-white p-4 mb-4 h-24"
             >
               <h1 class="font-bold text-sm md:text-lg">{{ data.name }}</h1>
+              <p class="text-xs md:text-sm">
+                ניתן להזמין את המוצר ליום
+                {{
+                  daysHebrew[
+                    getRecieveDay(
+                      data.times.makeDays,
+                      data.times.available_days_of_week,
+                      data.times.excludeDates
+                    )
+                  ]
+                }}
+              </p>
             </div>
           </template>
         </div>
